@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="be0732a1-f4a2-46f0-b426-b059ba5f5d92" name="Default Changelist" comment="" />
+    <list default="true" id="be0732a1-f4a2-46f0-b426-b059ba5f5d92" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/borlok/parser/ZaChestnyiBiznesRu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/borlok/parser/ZaChestnyiBiznesRu.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +18,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -22,6 +29,7 @@
     </option>
   </component>
   <component name="ProjectId" id="1n4VfTQwGlVXUEsg9rkGheR3BtT" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -29,6 +37,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/Загрузки/jsoup-1.13.1.jar!/" />
@@ -72,7 +81,7 @@
       <workItem from="1610708935182" duration="10199000" />
       <workItem from="1614595722268" duration="3794000" />
       <workItem from="1616424129548" duration="20638000" />
-      <workItem from="1616487630161" duration="23379000" />
+      <workItem from="1616487630161" duration="33950000" />
     </task>
     <servers />
   </component>
@@ -104,26 +113,26 @@
       <screen x="0" y="50" width="1920" height="970" />
     </state>
     <state x="653" y="235" key="FileChooserDialogImpl/0.50.1920.970@0.50.1920.970" timestamp="1614596084988" />
-    <state width="1842" height="225" key="GridCell.Tab.0.bottom" timestamp="1616516142419">
+    <state width="1842" height="225" key="GridCell.Tab.0.bottom" timestamp="1616535145056">
       <screen x="0" y="60" width="1920" height="960" />
     </state>
     <state width="1842" height="229" key="GridCell.Tab.0.bottom/0.50.1920.970@0.50.1920.970" timestamp="1614600265888" />
-    <state width="1842" height="225" key="GridCell.Tab.0.bottom/0.60.1920.960@0.60.1920.960" timestamp="1616516142419" />
-    <state width="1842" height="225" key="GridCell.Tab.0.center" timestamp="1616516142418">
+    <state width="1842" height="225" key="GridCell.Tab.0.bottom/0.60.1920.960@0.60.1920.960" timestamp="1616535145056" />
+    <state width="1842" height="225" key="GridCell.Tab.0.center" timestamp="1616535145055">
       <screen x="0" y="60" width="1920" height="960" />
     </state>
     <state width="1842" height="229" key="GridCell.Tab.0.center/0.50.1920.970@0.50.1920.970" timestamp="1614600265885" />
-    <state width="1842" height="225" key="GridCell.Tab.0.center/0.60.1920.960@0.60.1920.960" timestamp="1616516142418" />
-    <state width="1842" height="225" key="GridCell.Tab.0.left" timestamp="1616516142418">
+    <state width="1842" height="225" key="GridCell.Tab.0.center/0.60.1920.960@0.60.1920.960" timestamp="1616535145055" />
+    <state width="1842" height="225" key="GridCell.Tab.0.left" timestamp="1616535145054">
       <screen x="0" y="60" width="1920" height="960" />
     </state>
     <state width="1842" height="229" key="GridCell.Tab.0.left/0.50.1920.970@0.50.1920.970" timestamp="1614600265882" />
-    <state width="1842" height="225" key="GridCell.Tab.0.left/0.60.1920.960@0.60.1920.960" timestamp="1616516142418" />
-    <state width="1842" height="225" key="GridCell.Tab.0.right" timestamp="1616516142418">
+    <state width="1842" height="225" key="GridCell.Tab.0.left/0.60.1920.960@0.60.1920.960" timestamp="1616535145054" />
+    <state width="1842" height="225" key="GridCell.Tab.0.right" timestamp="1616535145055">
       <screen x="0" y="60" width="1920" height="960" />
     </state>
     <state width="1842" height="229" key="GridCell.Tab.0.right/0.50.1920.970@0.50.1920.970" timestamp="1614600265886" />
-    <state width="1842" height="225" key="GridCell.Tab.0.right/0.60.1920.960@0.60.1920.960" timestamp="1616516142418" />
+    <state width="1842" height="225" key="GridCell.Tab.0.right/0.60.1920.960@0.60.1920.960" timestamp="1616535145055" />
     <state width="1842" height="279" key="GridCell.Tab.1.bottom" timestamp="1616496529942">
       <screen x="0" y="60" width="1920" height="960" />
     </state>
