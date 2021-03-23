@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
+//TODO Дописать вид деятельности
 public class ZaChestnyiBiznesRu {
     private static final String startUrl = "https://zachestnyibiznes.ru";
     private static final Set<Company> companies = new HashSet<>();
