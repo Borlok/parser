@@ -6,7 +6,7 @@ import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        ZaChestnyiBiznesRu.parse();
+        ZaChestnyiBiznesRu.parse("Сыктывкар");
     }
 }
 

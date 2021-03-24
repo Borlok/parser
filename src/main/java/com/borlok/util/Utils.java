@@ -12,16 +12,16 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-public class XmlWriter {
+public class Utils {
     private File pathToXml;
     private File pathFromTxt;
 
-    public XmlWriter(File pathToXml, File pathFromTxt) {
+    public Utils(File pathToXml, File pathFromTxt) {
         this.pathToXml = pathToXml;
         this.pathFromTxt = pathFromTxt;
     }
 
-    public XmlWriter(File pathToXml) {
+    public Utils(File pathToXml) {
         this.pathToXml = pathToXml;
     }
 
@@ -38,7 +38,8 @@ public class XmlWriter {
             row.createCell(4).setCellValue(companies.get(i).getCompanyName());
             row.createCell(5).setCellValue(companies.get(i).getRegistrationDate());
             row.createCell(6).setCellValue(companies.get(i).getStatus());
-            row.createCell(7).setCellValue(companies.get(i).getTax());
+            row.createCell(7).setCellValue(companies.get(i).getMainActivity());
+            row.createCell(8).setCellValue(companies.get(i).getTax());
 
             FileOutputStream outputStream = new FileOutputStream(pathToXml);
             outputStream.write(workbook.getBytes());
@@ -46,6 +47,15 @@ public class XmlWriter {
             outputStream.close();
         }
         workbook.close();
+    }
+
+    public String getQuery(String searchQuery) {
+        String [] query = searchQuery.split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < query.length - 1; i++) {
+            builder.append(query[i]).append("+");
+        }
+        return builder.append(query[query.length - 1]).toString();
     }
 
     public void writeFromTxtToXml () {

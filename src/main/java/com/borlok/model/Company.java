@@ -3,16 +3,17 @@ package com.borlok.model;
 import java.util.List;
 
 public class Company {
-    private int inn;
+    private String inn;
     private String director;
     private List<String> founders;
     private String address;
     private String companyName;
     private String registrationDate;
     private String status;
+    private String mainActivity;
     private String tax;
 
-    public Company(int inn, String director, List<String> founders, String address, String companyName, String registrationDate, String status, String tax) {
+    public Company(String inn, String director, List<String> founders, String address, String companyName, String registrationDate, String status, String mainActivity, String tax) {
         this.inn = inn;
         this.director = director;
         this.founders = founders;
@@ -20,14 +21,15 @@ public class Company {
         this.companyName = companyName;
         this.registrationDate = registrationDate;
         this.status = status;
+        this.mainActivity = mainActivity;
         this.tax = tax;
     }
 
-    public int getInn() {
+    public String getInn() {
         return inn;
     }
 
-    public void setInn(int inn) {
+    public void setInn(String inn) {
         this.inn = inn;
     }
 
@@ -45,6 +47,14 @@ public class Company {
 
     public void setFounders(List<String> founders) {
         this.founders = founders;
+    }
+
+    public String getMainActivity() {
+        return mainActivity;
+    }
+
+    public void setMainActivity(String mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
     public String getAddress() {
@@ -90,13 +100,14 @@ public class Company {
     @Override
     public String toString() {
         return "Company{" +
-                "inn=" + inn +
+                "inn='" + inn + '\'' +
                 ", director='" + director + '\'' +
                 ", founders=" + founders +
                 ", address='" + address + '\'' +
                 ", companyName='" + companyName + '\'' +
                 ", registrationDate='" + registrationDate + '\'' +
                 ", status='" + status + '\'' +
+                ", mainActivity='" + mainActivity + '\'' +
                 ", tax='" + tax + '\'' +
                 '}';
     }

@@ -1,6 +1,6 @@
 package com.borlok.parser;
 
-import com.borlok.util.XmlWriter;
+import com.borlok.util.Utils;
 import com.borlok.model.Company;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,23 +12,30 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 //TODO Дописать вид деятельности
+
+/**
+ * Парсер для сайта https://zachestnyibiznes.ru
+ */
+
+
 public class ZaChestnyiBiznesRu {
     private static final String HTTPS_ZACHESTNYIBIZNES_RU = "https://zachestnyibiznes.ru";
     private static final Set<Company> COMPANIES = new HashSet<>();
     private static final File PATH_TO_XML = new File("xml2.xls");
-    private static final XmlWriter XML_WRITER = new XmlWriter(PATH_TO_XML);
+    private static final Utils UTILS = new Utils(PATH_TO_XML);
     private static int companyNumber; //TODO вконце удалить
 
-    public static void parse() throws IOException {
+    public static void parse(String searchQuery) throws IOException {
+        String query = UTILS.getQuery(searchQuery);
         int count = 2;
         int i = 1;
         while (i != count) {
 
-            String inputUrl = HTTPS_ZACHESTNYIBIZNES_RU + "/search?query=респ+Татарстан&page=" + i;
+            String inputUrl = HTTPS_ZACHESTNYIBIZNES_RU + "/search?query=" + query + "&page=" + i;
 
             Document document = Jsoup
                     .connect(inputUrl)
-                    .headers(fillHeaders())
+                    .headers(getHeaders())
                     .get();
 
             Elements itemProp = document.select("a[itemprop]");
@@ -38,27 +45,27 @@ public class ZaChestnyiBiznesRu {
         }
 
         saveCollectionToXml();
-//        createCompany("/company/ul/1051622166848_1655102728_OOO-ROSINTER-RESTORANTS-TATARSTAN");
+//        createCompany("/company/ul/1021600003083_1659005563_TRO-VDPO-RESPUBLIKI-TATARSTAN");
         for (Company company : COMPANIES)
             System.out.println(company);
     }
 
     private static void saveCollectionToXml() {
         try {
-            XML_WRITER.writeCompanyToXml(new ArrayList<>(COMPANIES));
+            UTILS.writeCompanyToXml(new ArrayList<>(COMPANIES));
         } catch (IOException e) {
             System.err.println("Something wrong by save collection: " + e);
         }
     }
 
-    private static void createCompany(String href) throws IOException {
+    private static void createCompany(String href) {
         Company company;
         try {
             if (href.length() <= 1)
                 return;
             Document document = Jsoup
                     .connect(HTTPS_ZACHESTNYIBIZNES_RU + href)
-                    .headers(fillHeaders())
+                    .headers(getHeaders())
                     .get();
 
             Elements companyNameElement = document.select("span#nameCompCard"); //Название компании
@@ -69,26 +76,54 @@ public class ZaChestnyiBiznesRu {
             Elements directorNameElement = document.select("div[itemtype=http://schema.org/OrganizationRole]").select("a[target=_blank]"); // Имя директора
             Elements founderElementNum = document.select("a[data-target=#modal-founders]");// Имя Учредителя
             Elements foundersElement = document.select("table.hidden-print").select("span[itemprop=founder]");
+            Elements mainActivityElement = document.select("div[itemprop]:contains(Основной вид деятельности:)");
 
+//            Elements contactsElement = getContactsElements(document);// TODO Нет возьожности закончить без покупки премиум аккаунта
 
             String companyName = getStringFromElement(companyNameElement);
             String status = getStringFromElement(statusElement);
             String date = getDateFromElement(registerDateElement);
-            int inn = Integer.parseInt(getStringFromElement(innElement));
+            String inn = getStringFromElement(innElement);
             String address = getAddress(addressElement);
-//            System.out.print(href + " "); //TODO
             String director = getDirectorsName(directorNameElement, document);
+            String mainActivity = getMainActivityFromElement(mainActivityElement);
+
+//            System.out.print(href + " "); //TODO
+
             int foundersNumber = Integer.parseInt(founderElementNum.first().text());
             List<String> founders = getFounders(document, foundersElement, foundersNumber);
 //            System.out.println(director + " ");
 //            System.out.println(); //TODO
 
-
-            company = new Company(inn, director, founders, address, companyName, date, status, "UNKNOWN");
+            company = new Company(inn, director, founders, address, companyName, date, status, mainActivity,"UNKNOWN");
         } catch (Exception e) {
             return;
         }
         COMPANIES.add(company);
+    }
+
+    private static Elements getContactsElements(Document document) throws IOException {
+        Elements contactsHrefElement = document.select("a:contains(Контакты)");
+        String contactsHref = contactsHrefElement.attr("href");
+        Document contactsDocument = Jsoup
+                .connect(HTTPS_ZACHESTNYIBIZNES_RU + contactsHref)
+                .headers(getHeaders())
+                .get();
+
+        Elements h2 = contactsDocument.select("h2.f-s-18");
+        System.out.println(h2);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Elements contactElement = contactsDocument.select("div.text-left okved-table f-s-14 m-t-20");
+        System.out.println(contactElement);
+        return null;
+    }
+
+    private static String getMainActivityFromElement(Elements mainActivityElement) {
+        return mainActivityElement.textNodes().get(3).text().trim();
     }
 
     private static List<String> getFounders(Document document, Elements foundersElement, int foundersNumber) {
@@ -150,7 +185,7 @@ public class ZaChestnyiBiznesRu {
         }
     }
 
-    private static Map<String, String> fillHeaders() {
+    private static Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36");
         headers.put("cf-request-id", "08ffe74e60000015fce9af0000000001");
