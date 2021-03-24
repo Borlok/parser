@@ -1,18 +1,22 @@
 package com.borlok.parser;
 
+import com.borlok.util.XmlWriter;
 import com.borlok.model.Company;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 //TODO Дописать вид деятельности
 public class ZaChestnyiBiznesRu {
-    private static final String startUrl = "https://zachestnyibiznes.ru";
-    private static final Set<Company> companies = new HashSet<>();
+    private static final String HTTPS_ZACHESTNYIBIZNES_RU = "https://zachestnyibiznes.ru";
+    private static final Set<Company> COMPANIES = new HashSet<>();
+    private static final File PATH_TO_XML = new File("xml2.xls");
+    private static final XmlWriter XML_WRITER = new XmlWriter(PATH_TO_XML);
     private static int companyNumber; //TODO вконце удалить
 
     public static void parse() throws IOException {
@@ -20,7 +24,7 @@ public class ZaChestnyiBiznesRu {
         int i = 1;
         while (i != count) {
 
-            String inputUrl = startUrl + "/search?query=респ+Татарстан&page=" + i;
+            String inputUrl = HTTPS_ZACHESTNYIBIZNES_RU + "/search?query=респ+Татарстан&page=" + i;
 
             Document document = Jsoup
                     .connect(inputUrl)
@@ -32,10 +36,19 @@ public class ZaChestnyiBiznesRu {
                 createCompany(element.attr("href"));
             i++;
         }
-//        createCompany("/company/ul/1051622166848_1655102728_OOO-ROSINTER-RESTORANTS-TATARSTAN");
 
-        for (Company company : companies)
+        saveCollectionToXml();
+//        createCompany("/company/ul/1051622166848_1655102728_OOO-ROSINTER-RESTORANTS-TATARSTAN");
+        for (Company company : COMPANIES)
             System.out.println(company);
+    }
+
+    private static void saveCollectionToXml() {
+        try {
+            XML_WRITER.writeCompanyToXml(new ArrayList<>(COMPANIES));
+        } catch (IOException e) {
+            System.err.println("Something wrong by save collection: " + e);
+        }
     }
 
     private static void createCompany(String href) throws IOException {
@@ -44,7 +57,7 @@ public class ZaChestnyiBiznesRu {
             if (href.length() <= 1)
                 return;
             Document document = Jsoup
-                    .connect(startUrl + href)
+                    .connect(HTTPS_ZACHESTNYIBIZNES_RU + href)
                     .headers(fillHeaders())
                     .get();
 
@@ -75,20 +88,21 @@ public class ZaChestnyiBiznesRu {
         } catch (Exception e) {
             return;
         }
-        companies.add(company);
+        COMPANIES.add(company);
     }
 
     private static List<String> getFounders(Document document, Elements foundersElement, int foundersNumber) {
         Set<String> founders = new HashSet<>();
         if (foundersNumber != 0) {
-            for (int i = 0; i < foundersElement.textNodes().size(); i++)
-                founders.add(foundersElement.get(i).text());
-            if (foundersElement.textNodes().isEmpty() || foundersElement.textNodes().size() != foundersNumber) {
+
+            addElementsToCollection(foundersElement, founders, 1); //Добавление физ лиц
+
+            if (foundersElement.textNodes().isEmpty() || foundersElement.textNodes().size() != foundersNumber) { // Добавление компаний
                 foundersElement = document.select("table.hidden-print").select("a[target]");
-                for (int i = 0; i < foundersElement.textNodes().size(); i = i + 2)
-                    founders.add(foundersElement.get(i).text());
+                addElementsToCollection(foundersElement, founders, 2);
             }
-            if (founders.isEmpty() || founders.size() != foundersNumber) {
+
+            if (founders.isEmpty() || founders.size() != foundersNumber) { // Добавление гос.Учреждений
                 //TODO здесь объединить на конечном этапе
                 foundersElement = document.select("table.hidden-print").select("td");
                 founders = foundersElement.textNodes().stream()
@@ -104,6 +118,11 @@ public class ZaChestnyiBiznesRu {
         System.out.print(++companyNumber + " Соответствие соочередителей: " + foundersNumber + " " + (founders.size() == foundersNumber) + " "); //TODO
         System.out.println(); //TODO
         return new ArrayList<>(founders);
+    }
+
+    private static void addElementsToCollection(Elements foundersElement, Set<String> founders, int step) {
+        for (int i = 0; i < foundersElement.textNodes().size(); i = i + step)
+            founders.add(foundersElement.get(i).text());
     }
 
     private static String getAddress(Elements addressElement) {
