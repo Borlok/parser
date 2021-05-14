@@ -20,34 +20,36 @@ import java.util.stream.Collectors;
 
 public class ZaChestnyiBiznesRu {
     private static final String HTTPS_ZACHESTNYIBIZNES_RU = "https://zachestnyibiznes.ru";
-    private static final Set<Company> COMPANIES = new HashSet<>();
     private static final File PATH_TO_XML = new File("xml2.xls");
     private static final Utils UTILS = new Utils(PATH_TO_XML);
+    private static final Set<Company> COMPANIES = new HashSet<>();
     private static int companyNumber; //TODO вконце удалить
 
     public static void parse(String searchQuery) throws IOException {
         String query = UTILS.getQuery(searchQuery);
-        int count = 2;
-        int i = 1;
-        while (i != count) {
+        int pageValue = 2;
+        int counter = 1;
+        while (counter != pageValue) {
 
-            String inputUrl = HTTPS_ZACHESTNYIBIZNES_RU + "/search?query=" + query + "&page=" + i;
+            String urlForParsing = HTTPS_ZACHESTNYIBIZNES_RU + "/search?query=" + query + "&page=" + counter;
+            Document document = getDocument(urlForParsing);
 
-            Document document = Jsoup
-                    .connect(inputUrl)
-                    .headers(getHeaders())
-                    .get();
+            Elements referencesToCompanyPage = document.select("a[itemprop]");
 
-            Elements itemProp = document.select("a[itemprop]");
-            for (Element element : itemProp)
+            for (Element element : referencesToCompanyPage)
                 createCompany(element.attr("href"));
-            i++;
+
+            counter++;
         }
 
         saveCollectionToXml();
 //        createCompany("/company/ul/1021600003083_1659005563_TRO-VDPO-RESPUBLIKI-TATARSTAN");
         for (Company company : COMPANIES)
             System.out.println(company);
+    }
+
+    private static Document getDocument(String urlForParsing) throws IOException {
+        return Jsoup.connect(urlForParsing).headers(getHeaders()).get();
     }
 
     private static void saveCollectionToXml() {
@@ -63,22 +65,19 @@ public class ZaChestnyiBiznesRu {
         try {
             if (href.length() <= 1)
                 return;
-            Document document = Jsoup
-                    .connect(HTTPS_ZACHESTNYIBIZNES_RU + href)
-                    .headers(getHeaders())
-                    .get();
+            Document document = getDocument(HTTPS_ZACHESTNYIBIZNES_RU + href);
 
-            Elements companyNameElement = document.select("span#nameCompCard"); //Название компании
-            Elements statusElement = document.select("div.m-t-5").select("b[class]"); // статус
-            Elements registerDateElement = document.select("div.m-t-5").select("b[itemprop]"); // дата регистрации
-            Elements innElement = document.select("span#inn"); // ИНН
-            Elements addressElement = document.select("div[itemprop = address]"); // адрес
-            Elements directorNameElement = document.select("div[itemtype=http://schema.org/OrganizationRole]").select("a[target=_blank]"); // Имя директора
-            Elements founderElementNum = document.select("a[data-target=#modal-founders]");// Имя Учредителя
+            Elements companyNameElement = document.select("span#nameCompCard");
+            Elements statusElement = document.select("div.m-t-5").select("b[class]");
+            Elements registerDateElement = document.select("div.m-t-5").select("b[itemprop]");
+            Elements innElement = document.select("span#inn");
+            Elements addressElement = document.select("div[itemprop = address]");
+            Elements directorNameElement = document.select("div[itemtype=http://schema.org/OrganizationRole]").select("a[target=_blank]");
+            Elements founderElementNum = document.select("a[data-target=#modal-founders]");
             Elements foundersElement = document.select("table.hidden-print").select("span[itemprop=founder]");
             Elements mainActivityElement = document.select("div[itemprop]:contains(Основной вид деятельности:)");
 
-//            Elements contactsElement = getContactsElements(document);// TODO Нет возьожности закончить без покупки премиум аккаунта
+//            Elements contactsElement = getContactsElements(document);// TODO Нет возможности закончить без покупки премиум аккаунта
 
             String companyName = getStringFromElement(companyNameElement);
             String status = getStringFromElement(statusElement);
